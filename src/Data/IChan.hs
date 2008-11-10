@@ -1,7 +1,7 @@
 -- |
 -- Module      : Data.IChan
 -- Copyright   : (c) 2008 Bertram Felgenhauer
--- License     : BSD2
+-- License     : BSD3
 --
 -- Maintainer  : Bertram Felgenhauer <int-e@gmx.de>
 -- Stability   : experimental
@@ -11,50 +11,51 @@
 --
 module Data.IChan (
     IChan,
-    newIChan,
-    readIChan,
-    writeIChan,
-    tryWriteIChan,
+    new,
+    read,
+    write,
+    tryWrite,
 ) where
 
-import Data.IVar
+import Prelude hiding (read)
+import qualified Data.IVar as IVar
 import Control.Monad
 import Control.Concurrent.MVar
 
 -- |
 -- An IChan is a channel built on top of @IVar@s. It's suitable for racing
 -- several threads for each value in the generated sequence.
-newtype IChan a = IChan (IVar (a, IChan a))
+newtype IChan a = IChan (IVar.IVar (a, IChan a))
 
--- | @newIChan@
+-- | @new@
 --
 -- Create a new channel.
-newIChan :: IO (IChan a)
-newIChan = IChan `fmap` newIVar
+new :: IO (IChan a)
+new = IChan `fmap` IVar.new
 
--- | @readIChan ichan@
+-- | @read ichan@
 --
 -- Returns the contents of a channel as a list.
-readIChan :: IChan a -> [a]
-readIChan (IChan as) = let (a, ic) = readIVar as in a : readIChan ic
+read :: IChan a -> [a]
+read (IChan as) = let (a, ic) = IVar.read as in a : read ic
 
--- | @tryWriteIChan ichan value@
+-- | @tryWrite ichan value@
 --
 -- Write a single value to the channel. Blocks if a value has already been
 -- written to the channel. Returns a new channel for writing further values.
-writeIChan :: IChan a -> a -> IO (IChan a)
-writeIChan (IChan as) a = do
-    ic <- newIChan
-    writeIVar as (a, ic)
+write :: IChan a -> a -> IO (IChan a)
+write (IChan as) a = do
+    ic <- new
+    IVar.write as (a, ic)
     return ic
 
--- | @tryWriteIChan ichan value@
+-- | @tryWrite ichan value@
 --
 -- Attempts to write a single value to the channel. If a channel had already
 -- been written, returns @Nothing@. Otherwise, returns a new channel for
 -- writing further values.
-tryWriteIChan :: IChan a -> a -> IO (Maybe (IChan a))
-tryWriteIChan (IChan as) a = do
-    ic <- newIChan
-    success <- tryWriteIVar as (a, ic)
+tryWrite :: IChan a -> a -> IO (Maybe (IChan a))
+tryWrite (IChan as) a = do
+    ic <- new
+    success <- IVar.tryWrite as (a, ic)
     return (guard success >> return ic)

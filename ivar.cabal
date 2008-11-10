@@ -1,0 +1,21 @@
+Name:          simple-ivar
+Version:       0.0.0.0
+Category:      Concurrency
+Stability:     experimental
+Copyright:     (c) 2008 Bertram Felgenhauer
+Maintainer:    Bertram Felgenhauer <int-e@gmx.de>
+License:       BSD3
+License-File:  LICENSE
+Synopsis:      A concurrency primitive, "Immutable Variables"
+Description:   
+   
+Cabal-Version: >=1.2
+Build-Type:    Simple
+
+Library
+    HS-Source-Dirs:     src
+    Exposed-Modules:    Data.IVar, Data.IChan, Data.MIChan
+    Build-Depends:      base
+    GHC-Options:        -fno-state-hack
+
+

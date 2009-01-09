@@ -1,31 +1,20 @@
 -- |
 -- Module      : Data.MIChan
--- Copyright   : (c) 2008 Bertram Felgenhauer
+-- Copyright   : (c) 2008, 2009 Bertram Felgenhauer
 -- License     : BSD3
 --
 -- Maintainer  : Bertram Felgenhauer <int-e@gmx.de>
 -- Stability   : experimental
 -- Portability : ghc
 --
--- A multicast channel built on top of @IVar@s.
+-- An 'MIChan' is a multicast channel built on top of an 'IChan.IChan'.
 --
-
-{-
-comparison with Control.Concurrent.Chan:
-\/ = implemented    -- = can't be implemented    nn = not needed
-
-\/   newChan          (newMIChan)
-\/   writeChan        (writeMIChan)
---   readChan         there is no way to steal items from other readers
---   unGetChan
---   isEmptyChan      needs an IO interface for reading
-\/   getChanContents  (readMIchan)
-\/   writeList2Chan   (writeList2MIChan)
-nn   dupChan
-\/   Chan             (MIChan)
--}
+-- Like 'IChan.IChan', this supports multiple reader. It is comparable to
+-- a 'Control.Concurrent.Chan.Chan' for the writing end: Each write will
+-- append an element to the channel. No writes will fail.
 
 module Data.MIChan (
+    -- $comparison
     MIChan,
     new,
     read,
@@ -38,9 +27,7 @@ import qualified Data.IChan as IChan
 import Control.Monad
 import Control.Concurrent.MVar
 
--- |
--- An MIChan is a multicast channel. Several threads can write to the channel;
--- their values will be serialized.
+-- | A multicast channel.
 newtype MIChan a = MIChan (MVar (IChan.IChan a))
 
 -- | Create a new multicast channel.
@@ -59,7 +46,23 @@ write :: MIChan a -> a -> IO ()
 write (MIChan mic) value = do
     modifyMVar_ mic (\ic -> IChan.write ic value)
 
--- | Send values across the channel, atomically.
+-- | Send several values across the channel, atomically.
 writeList :: MIChan a -> [a] -> IO ()
 writeList (MIChan mic) values = do
     modifyMVar_ mic (\ic -> foldM IChan.write ic values)
+
+-- $comparison
+-- Comparison to Control.Concurrent.Chan.Chan:
+--
+-- > Control.Concurrent.Chan.Chan => Data.MIChan
+-- > newChan                      => new
+-- > writeChan                    => write
+-- > getChanContents              => read
+-- > writeList2Chan               => writeList
+--
+-- These can't be implemented:
+--
+-- > readChan     (can't steal items from other readers)
+-- > unGetChan    (there is no separate reading end)
+-- > isEmptyChan  (needs an IO interface for reading)
+-- > dupChan      (not needed)

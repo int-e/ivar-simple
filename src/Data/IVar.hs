@@ -1,13 +1,19 @@
 -- |
 -- Module      : Data.IVar
--- Copyright   : (c) 2008 Bertram Felgenhauer
+-- Copyright   : (c) 2008, 2009 Bertram Felgenhauer
 -- License     : BSD3
 --
 -- Maintainer  : Bertram Felgenhauer <int-e@gmx.de>
 -- Stability   : experimental
 -- Portability : ghc
 --
--- IVars are write-once variables.
+-- 'IVar's are write-once variables.
+--
+-- Similarily to 'MVar's, 'IVar's can be either empty or filled. Once filled,
+-- they keep their value indefinitely - they are immutable.
+--
+-- Reading from an empty 'IVar' will block until the 'IVar' is filled. Because
+-- the value read will never change, this is a pure computation.
 --
 module Data.IVar (
     IVar,
@@ -20,13 +26,15 @@ module Data.IVar (
 ) where
 
 import Control.Concurrent.MVar
+import Control.Exception
+import Control.Monad
 import System.IO.Unsafe
 import Prelude hiding (read)
 
--- | A write-once (\'immutable\') Variable
+-- | A write-once (/immutable/) Variable
 data IVar a = IVar (MVar ()) (MVar a) a
 
--- | Creates a new, empty IVar.
+-- | Creates a new, empty 'IVar'.
 new :: IO (IVar a)
 new = do
     lock <- newMVar ()
@@ -35,36 +43,37 @@ new = do
         value = unsafePerformIO $ takeMVar trans
     return (IVar lock trans value)
 
--- | Create a new filled IVar.
+-- | Create a new filled 'IVar'.
 --
--- This is slightly cheaper than creating a new @IVar@ and then writing to it.
+-- This is slightly cheaper than creating a new 'IVar' and then writing to it.
 newFull :: a -> IO (IVar a)
 newFull value = do
     lock <- newEmptyMVar
     return (IVar lock (error "unused MVar") value)
 
--- | Returns the value of an @IVar@.
+-- | Returns the value of an 'IVar'.
 --
--- The evaluation of the returned value will block until a value is written to
--- the @IVar@ if there is no value yet.
---
--- @read@ itself will not block.
+-- The evaluation will block until a value is written to the 'IVar' if there
+-- is no value yet.
 read :: IVar a -> a
 read (IVar _ _ value) = value
 
--- | Try to read an IVar. Returns Nothing if there's not value yet.
+-- | Try to read an 'IVar'. Returns 'Nothing' if there is not value yet.
 tryRead :: IVar a -> IO (Maybe a)
 tryRead (IVar lock _ value) = do
     empty <- isEmptyMVar lock
     if empty then return (Just value) else return Nothing
 
--- | Writes a value to an IVar. Blocks if the IVar is full.
+-- | Writes a value to an 'IVar'. Raises a 'BlockedIndefinitely' exception if
+-- it fails.
 write :: IVar a -> a -> IO ()
-write (IVar lock trans _) value = do
-    takeMVar lock
-    putMVar trans value
+write ivar value = do
+    result <- tryWrite ivar value
+    when (not result) $ throwIO BlockedIndefinitely
+-- Note: It would be easier to block forever when the IVar is full. However,
+-- the thread would likely not be garbage collected then.
 
--- | Writes a value to an IVar. Returns @True@ if successful.
+-- | Writes a value to an 'IVar'. Returns 'True' if successful.
 tryWrite :: IVar a -> a -> IO Bool
 tryWrite (IVar lock trans _) value = do
     a <- tryTakeMVar lock

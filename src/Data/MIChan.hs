@@ -43,31 +43,23 @@ import Control.Concurrent.MVar
 -- their values will be serialized.
 newtype MIChan a = MIChan (MVar (IChan.IChan a))
 
--- | @newMIChan@
---
--- Create a new multicast channel.
+-- | Create a new multicast channel.
 new :: IO (MIChan a)
 new = do
     ic <- IChan.new
     MIChan `fmap` newMVar ic
 
--- | @readMIChan chan@
---
--- Return the list of values that the channel represents.
+-- | Return the list of values that the channel represents.
 read :: MIChan a -> IO [a]
 read (MIChan mic) = do
     IChan.read `fmap` readMVar mic
 
--- | @writeMIChan chan value@
---
--- Send a value across the channel.
+-- | Send a value across the channel.
 write :: MIChan a -> a -> IO ()
 write (MIChan mic) value = do
     modifyMVar_ mic (\ic -> IChan.write ic value)
 
--- | @writeList2MIChan chan values@
---
--- Send values across the channel, atomically.
+-- | Send values across the channel, atomically.
 writeList :: MIChan a -> [a] -> IO ()
 writeList (MIChan mic) values = do
     modifyMVar_ mic (\ic -> foldM IChan.write ic values)

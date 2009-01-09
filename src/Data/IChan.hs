@@ -7,7 +7,7 @@
 -- Stability   : experimental
 -- Portability : ghc
 --
--- Two channels built on top of @IVar@s.
+-- A channel built on top of @IVar@s.
 --
 module Data.IChan (
     IChan,
@@ -27,33 +27,26 @@ import Control.Concurrent.MVar
 -- several threads for each value in the generated sequence.
 newtype IChan a = IChan (IVar.IVar (a, IChan a))
 
--- | @new@
---
--- Create a new channel.
+-- | Create a new channel.
 new :: IO (IChan a)
 new = IChan `fmap` IVar.new
 
--- | @read ichan@
---
--- Returns the contents of a channel as a list.
+-- | Returns the contents of a channel as a list.
 read :: IChan a -> [a]
 read (IChan as) = let (a, ic) = IVar.read as in a : read ic
 
--- | @tryWrite ichan value@
---
--- Write a single value to the channel. Blocks if a value has already been
--- written to the channel. Returns a new channel for writing further values.
+-- | Write a single value to the channel.
+-- Blocks if a value has already been written to the channel. Returns a
+-- new channel for writing further values.
 write :: IChan a -> a -> IO (IChan a)
 write (IChan as) a = do
     ic <- new
     IVar.write as (a, ic)
     return ic
 
--- | @tryWrite ichan value@
---
--- Attempts to write a single value to the channel. If a channel had already
--- been written, returns @Nothing@. Otherwise, returns a new channel for
--- writing further values.
+-- | Attempts to write a single value to the channel.
+-- If a value has already been written, returns @Nothing@. Otherwise,
+-- returns a new channel for writing further values.
 tryWrite :: IChan a -> a -> IO (Maybe (IChan a))
 tryWrite (IChan as) a = do
     ic <- new

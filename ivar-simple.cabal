@@ -6,16 +6,18 @@ Copyright:     (c) 2008 Bertram Felgenhauer
 Maintainer:    Bertram Felgenhauer <int-e@gmx.de>
 License:       BSD3
 License-File:  LICENSE
-Synopsis:      A concurrency primitive, "Immutable Variables"
-Description:   
-   
-Cabal-Version: >=1.2
+Synopsis:      Write once concurrency primitives.
+Description:
+  @IVar@s are write-once variables.
+  .
+  They can be read, an operation that will block until a value was written
+  to the variable. They can be written to exactly once.
+Cabal-Version: >= 1.4
 Build-Type:    Simple
 
 Library
     HS-Source-Dirs:     src
     Exposed-Modules:    Data.IVar, Data.IChan, Data.MIChan
     Build-Depends:      base
-    GHC-Options:        -fno-state-hack
-
-
+    if impl(ghc <= 6.10.1)
+        GHC-Options:        -fno-state-hack

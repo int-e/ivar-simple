@@ -1,0 +1,5 @@
+0.1.0.1 (2009-01-11)
+   make Data.IVar.Simple.tryWrite exception safe (noticed by Chris Kuklewicz)
+
+0.1.0.0 (2009-01-11)
+   initial version

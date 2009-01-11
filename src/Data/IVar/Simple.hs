@@ -75,7 +75,7 @@ write ivar value = do
 
 -- | Writes a value to an 'IVar'. Returns 'True' if successful.
 tryWrite :: IVar a -> a -> IO Bool
-tryWrite (IVar lock trans _) value = do
+tryWrite (IVar lock trans _) value = block $ do
     a <- tryTakeMVar lock
     case a of
         Just _  -> putMVar trans value >> return True

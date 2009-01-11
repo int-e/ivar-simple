@@ -9,8 +9,8 @@
 --
 -- An 'MIChan' is a multicast channel built on top of an 'IChan.IChan'.
 --
--- Like 'IChan.IChan', this supports multiple reader. It is comparable to
--- a 'Control.Concurrent.Chan.Chan' for the writing end: Each write will
+-- Like 'IChan.IChan', this supports multiple readers. It is comparable to
+-- a @Control.Concurrent.Chan.Chan@ for the writing end: Each write will
 -- append an element to the channel. No writes will fail.
 
 module Data.IVar.Simple.MIChan (
@@ -52,7 +52,7 @@ writeList (MIChan mic) values = do
     modifyMVar_ mic (\ic -> foldM IChan.write ic values)
 
 -- $comparison
--- Comparison to Control.Concurrent.Chan.Chan:
+-- Comparison to @Control.Concurrent.Chan@:
 --
 -- > Control.Concurrent.Chan.Chan => Data.MIChan
 -- > newChan                      => new

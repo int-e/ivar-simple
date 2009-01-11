@@ -1,5 +1,5 @@
 -- |
--- Module      : Data.IChan
+-- Module      : Data.IVar.Simple.IChan
 -- Copyright   : (c) 2008, 2009 Bertram Felgenhauer
 -- License     : BSD3
 --
@@ -15,7 +15,7 @@
 -- only the first of several attempts to write to the head will succeed,
 -- returning a new 'IChan' head for writing more values.
 --
-module Data.IChan (
+module Data.IVar.Simple.IChan (
     IChan,
     new,
     read,
@@ -24,7 +24,7 @@ module Data.IChan (
 ) where
 
 import Prelude hiding (read)
-import qualified Data.IVar as IVar
+import qualified Data.IVar.Simple as IVar
 import Control.Monad
 import Control.Concurrent.MVar
 

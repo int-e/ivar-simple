@@ -1,5 +1,5 @@
 -- |
--- Module      : Data.IVar
+-- Module      : Data.IVar.Simple
 -- Copyright   : (c) 2008, 2009 Bertram Felgenhauer
 -- License     : BSD3
 --
@@ -15,7 +15,7 @@
 -- Reading from an empty 'IVar' will block until the 'IVar' is filled. Because
 -- the value read will never change, this is a pure computation.
 --
-module Data.IVar (
+module Data.IVar.Simple (
     IVar,
     new,
     newFull,

@@ -1,5 +1,5 @@
 -- |
--- Module      : Data.MIChan
+-- Module      : Data.IVar.Simple.MIChan
 -- Copyright   : (c) 2008, 2009 Bertram Felgenhauer
 -- License     : BSD3
 --
@@ -13,7 +13,7 @@
 -- a 'Control.Concurrent.Chan.Chan' for the writing end: Each write will
 -- append an element to the channel. No writes will fail.
 
-module Data.MIChan (
+module Data.IVar.Simple.MIChan (
     -- $comparison
     MIChan,
     new,
@@ -23,7 +23,7 @@ module Data.MIChan (
 ) where
 
 import Prelude hiding (read)
-import qualified Data.IChan as IChan
+import qualified Data.IVar.Simple.IChan as IChan
 import Control.Monad
 import Control.Concurrent.MVar
 

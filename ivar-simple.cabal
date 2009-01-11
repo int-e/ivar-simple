@@ -1,10 +1,10 @@
 Name:          ivar-simple
-Version:       0.0.0.0
+Version:       0.1.0.0
 Category:      Concurrency
 Stability:     experimental
 Copyright:     (c) 2008, 2009 Bertram Felgenhauer
 Maintainer:    Bertram Felgenhauer <int-e@gmx.de>
-License:       BSD3
+License:       MIT
 License-File:  LICENSE
 Synopsis:      Write once concurrency primitives.
 Description:
@@ -14,10 +14,16 @@ Description:
   to the variable. They can be written to exactly once.
 Cabal-Version: >= 1.4
 Build-Type:    Simple
+Extra-Source-Files:
+    README
 
 Library
     HS-Source-Dirs:     src
-    Exposed-Modules:    Data.IVar, Data.IChan, Data.MIChan
+    Exposed-Modules:
+        Data.IVar.Simple
+        Data.IVar.Simple.IChan
+        Data.IVar.Simple.MIChan
     Build-Depends:      base
+    -- workaround for http://hackage.haskell.org/trac/ghc/ticket/2756
     if impl(ghc <= 6.10.1)
         GHC-Options:        -fno-state-hack

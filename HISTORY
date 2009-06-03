@@ -1,3 +1,6 @@
+0.1.0.2 (2009-06-03)
+   depend on base < 5 instead of base.
+
 0.1.0.1 (2009-01-11)
    make Data.IVar.Simple.tryWrite exception safe (noticed by Chris Kuklewicz)
 

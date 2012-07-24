@@ -1,6 +1,7 @@
+{-# LANGUAGE DeriveDataTypeable #-}
 -- |
 -- Module      : Data.IVar.Simple
--- Copyright   : (c) 2008-2012 Bertram Felgenhauer
+-- Copyright   : (c) 2008, 2009 Bertram Felgenhauer
 -- License     : BSD3
 --
 -- Maintainer  : Bertram Felgenhauer <int-e@gmx.de>
@@ -23,18 +24,20 @@ module Data.IVar.Simple (
     tryRead,
     write,
     tryWrite,
+    BlockedIndefinitelyOnIVar,
 ) where
 
 import Control.Concurrent.MVar
 import Control.Exception
 import Control.Monad
+import Data.Typeable
 import System.IO.Unsafe
 import Prelude hiding (read)
 
 -- | A write-once (/immutable/) Variable
 data IVar a = IVar (MVar ()) (MVar a) a
 
--- | Creates a new, empty 'IVar'.
+-- | Create a new, empty 'IVar'.
 new :: IO (IVar a)
 new = do
     lock <- newMVar ()
@@ -53,30 +56,42 @@ newFull value = do
 
 -- | Returns the value of an 'IVar'.
 --
--- The evaluation will block until a value is written to the 'IVar' if there
--- is no value yet.
+-- The evaluation will block until a value is written to the 'IVar' if it
+-- has no value yet.
 read :: IVar a -> a
 read (IVar _ _ value) = value
 
--- | Try to read an 'IVar'. Returns 'Nothing' if there is not value yet.
+-- | Try to read an 'IVar'. Returns 'Nothing' if it has no value yet.
 tryRead :: IVar a -> IO (Maybe a)
 tryRead (IVar lock _ value) = do
     empty <- isEmptyMVar lock
     if empty then return (Just value) else return Nothing
 
--- | Writes a value to an 'IVar'. Raises a 'NonTermination' exception if
--- it fails.
+-- | Writes a value to an 'IVar'. Raises a 'BlockedIndefinitelyOnIVar'
+-- exception if the variable already has a value.
 write :: IVar a -> a -> IO ()
 write ivar value = do
     result <- tryWrite ivar value
-    when (not result) $ throwIO NonTermination
+    when (not result) $ throwIO BlockedIndefinitelyOnIVar
 -- Note: It would be easier to block forever when the IVar is full. However,
 -- the thread would likely not be garbage collected then.
 
--- | Writes a value to an 'IVar'. Returns 'True' if successful.
+-- | Writes a value to an 'IVar'. Returns 'True' if successful, and
+-- 'False' otherwise.
 tryWrite :: IVar a -> a -> IO Bool
 tryWrite (IVar lock trans _) value = block $ do
     a <- tryTakeMVar lock
     case a of
         Just _  -> putMVar trans value >> return True
         Nothing -> return False
+
+-- | The thread has attempted to write to a full 'IVar'.
+data BlockedIndefinitelyOnIVar = BlockedIndefinitelyOnIVar
+    deriving (Typeable)
+
+instance Exception BlockedIndefinitelyOnIVar
+
+instance Show BlockedIndefinitelyOnIVar where
+    showsPrec _ BlockedIndefinitelyOnIVar =
+        showString "thread blocked indefinitely writing full IVar"
+

@@ -1,3 +1,7 @@
+0.3     (2012-07-24)
+   change NonTermination to a custom BlockedIndefinitelyOnIVar exception,
+   and require base >= 4. (using NonTermination leads to <<loop>> messages)
+
 0.2     (2012-07-23)
    change BlockedIndefinitely exception (gone since ghc 7.0) to NonTermination
 

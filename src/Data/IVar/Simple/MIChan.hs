@@ -1,6 +1,6 @@
 -- |
 -- Module      : Data.IVar.Simple.MIChan
--- Copyright   : (c) 2008, 2009 Bertram Felgenhauer
+-- Copyright   : (c) 2008-2012 Bertram Felgenhauer
 -- License     : BSD3
 --
 -- Maintainer  : Bertram Felgenhauer <int-e@gmx.de>
@@ -9,9 +9,9 @@
 --
 -- An 'MIChan' is a multicast channel built on top of an 'IChan.IChan'.
 --
--- Like 'IChan.IChan', this supports multiple readers. It is comparable to
--- a @Control.Concurrent.Chan.Chan@ for the writing end: Each write will
--- append an element to the channel. No writes will fail.
+-- Like 'IChan.IChan', this channel supports multiple readers. It is
+-- comparable to a @Control.Concurrent.Chan.Chan@ for the writing end:
+-- Each write will append an element to the channel. No writes will fail.
 
 module Data.IVar.Simple.MIChan (
     -- $comparison

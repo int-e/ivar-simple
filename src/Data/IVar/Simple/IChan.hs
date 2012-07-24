@@ -8,8 +8,8 @@
 -- Portability : ghc
 --
 -- An 'IChan's is a type of multicast channel built on top of 'IVar.IVar's.
--- It supports multiple readers. The 'IChan' data type represents the head
--- of a channel.
+-- It supports multiple readers. The channel is represented as a linked
+-- list. The 'IChan' data type represents the head of a channel.
 --
 -- Writing to an 'IChan' head has write-once semantics similar to 'IVar.IVar's:
 -- only the first of several attempts to write to the head will succeed,
@@ -45,8 +45,8 @@ read (IChan as) = let (a, ic) = IVar.read as in a : read ic
 
 -- | Write a single value to the channel.
 --
--- Raises a 'NonTermination' exception if a value has already been
--- written to the channel. Otherwise, returns a new channel head for
+-- Raises a 'BlockedIndefinitelyOnIVar' exception if a value has already
+-- been written to the channel. Otherwise, returns a new channel head for
 -- writing further values.
 write :: IChan a -> a -> IO (IChan a)
 write (IChan as) a = do

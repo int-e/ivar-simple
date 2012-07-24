@@ -1,8 +1,8 @@
 Name:          ivar-simple
-Version:       0.1.0.2
+Version:       0.2
 Category:      Concurrency
 Stability:     experimental
-Copyright:     (c) 2008, 2009 Bertram Felgenhauer
+Copyright:     (c) 2008-2012 Bertram Felgenhauer
 Maintainer:    Bertram Felgenhauer <int-e@gmx.de>
 License:       MIT
 License-File:  LICENSE

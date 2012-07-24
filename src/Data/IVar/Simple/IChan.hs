@@ -1,6 +1,6 @@
 -- |
 -- Module      : Data.IVar.Simple.IChan
--- Copyright   : (c) 2008, 2009 Bertram Felgenhauer
+-- Copyright   : (c) 2008-2012 Bertram Felgenhauer
 -- License     : BSD3
 --
 -- Maintainer  : Bertram Felgenhauer <int-e@gmx.de>
@@ -45,7 +45,7 @@ read (IChan as) = let (a, ic) = IVar.read as in a : read ic
 
 -- | Write a single value to the channel.
 --
--- Raises a 'BlockedIndefinitely' exception if a value has already been
+-- Raises a 'NonTermination' exception if a value has already been
 -- written to the channel. Otherwise, returns a new channel head for
 -- writing further values.
 write :: IChan a -> a -> IO (IChan a)

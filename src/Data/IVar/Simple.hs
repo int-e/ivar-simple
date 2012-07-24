@@ -1,6 +1,6 @@
 -- |
 -- Module      : Data.IVar.Simple
--- Copyright   : (c) 2008, 2009 Bertram Felgenhauer
+-- Copyright   : (c) 2008-2012 Bertram Felgenhauer
 -- License     : BSD3
 --
 -- Maintainer  : Bertram Felgenhauer <int-e@gmx.de>
@@ -64,12 +64,12 @@ tryRead (IVar lock _ value) = do
     empty <- isEmptyMVar lock
     if empty then return (Just value) else return Nothing
 
--- | Writes a value to an 'IVar'. Raises a 'BlockedIndefinitely' exception if
+-- | Writes a value to an 'IVar'. Raises a 'NonTermination' exception if
 -- it fails.
 write :: IVar a -> a -> IO ()
 write ivar value = do
     result <- tryWrite ivar value
-    when (not result) $ throwIO BlockedIndefinitely
+    when (not result) $ throwIO NonTermination
 -- Note: It would be easier to block forever when the IVar is full. However,
 -- the thread would likely not be garbage collected then.
 

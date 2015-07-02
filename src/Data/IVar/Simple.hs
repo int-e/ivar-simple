@@ -1,7 +1,7 @@
-{-# LANGUAGE DeriveDataTypeable #-}
+{-# LANGUAGE DeriveDataTypeable, CPP #-}
 -- |
 -- Module      : Data.IVar.Simple
--- Copyright   : (c) 2008, 2009 Bertram Felgenhauer
+-- Copyright   : (c) 2008-2015 Bertram Felgenhauer
 -- License     : BSD3
 --
 -- Maintainer  : Bertram Felgenhauer <int-e@gmx.de>
@@ -84,6 +84,10 @@ tryWrite (IVar lock trans _) value = block $ do
     case a of
         Just _  -> putMVar trans value >> return True
         Nothing -> return False
+#if __GLASGOW_HASKELL__ >= 708
+  where
+    block = mask_
+#endif
 
 -- | The thread has attempted to write to a full 'IVar'.
 data BlockedIndefinitelyOnIVar = BlockedIndefinitelyOnIVar

@@ -15,8 +15,8 @@ description:
 cabal-version: >= 1.6
 build-type:    Simple
 extra-source-files:
-    README
-    HISTORY
+    README.md
+    Changelog
 
 source-repository head
   type:                 git

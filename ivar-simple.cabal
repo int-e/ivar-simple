@@ -1,31 +1,36 @@
-Name:          ivar-simple
-Version:       0.3.1
-Category:      Concurrency
-Stability:     experimental
-Copyright:     (c) 2008-2015 Bertram Felgenhauer
-Maintainer:    Bertram Felgenhauer <int-e@gmx.de>
-License:       MIT
-License-File:  LICENSE
-Synopsis:      Write once concurrency primitives.
-Description:
+name:          ivar-simple
+version:       0.3.1
+category:      Concurrency
+stability:     experimental
+copyright:     (c) 2008-2015 Bertram Felgenhauer
+maintainer:    Bertram Felgenhauer <int-e@gmx.de>
+license:       MIT
+license-file:  LICENSE
+synopsis:      Write once concurrency primitives.
+description:
   @IVar@s are write-once (immutable) variables.
   .
   They can be read, an operation that will block until a value was written
   to the variable. They can be written to exactly once.
-Cabal-Version: >= 1.4
-Build-Type:    Simple
-Extra-Source-Files:
+cabal-version: >= 1.6
+build-type:    Simple
+extra-source-files:
     README
     HISTORY
 
-Library
-    Hs-Source-Dirs:
+source-repository head
+  type:                 git
+  location:             https://github.com/int-e/ivar-simple
+
+
+library
+    hs-source-dirs:
         src
-    Exposed-Modules:
+    exposed-modules:
         Data.IVar.Simple
         Data.IVar.Simple.IChan
         Data.IVar.Simple.MIChan
-    Build-Depends:
+    build-depends:
         base >= 4 && < 5
-    Extensions:
+    extensions:
         DeriveDataTypeable

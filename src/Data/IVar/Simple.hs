@@ -2,7 +2,7 @@
 -- |
 -- Module      : Data.IVar.Simple
 -- Copyright   : (c) 2008-2015 Bertram Felgenhauer
--- License     : BSD3
+-- License     : MIT
 --
 -- Maintainer  : Bertram Felgenhauer <int-e@gmx.de>
 -- Stability   : experimental

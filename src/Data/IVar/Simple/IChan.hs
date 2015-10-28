@@ -1,7 +1,7 @@
 -- |
 -- Module      : Data.IVar.Simple.IChan
 -- Copyright   : (c) 2008-2012 Bertram Felgenhauer
--- License     : BSD3
+-- License     : MIT
 --
 -- Maintainer  : Bertram Felgenhauer <int-e@gmx.de>
 -- Stability   : experimental

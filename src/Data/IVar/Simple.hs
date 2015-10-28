@@ -37,6 +37,11 @@ import Prelude hiding (read)
 -- | A write-once (/immutable/) Variable
 data IVar a = IVar (MVar ()) (MVar a) a
 
+instance Eq (IVar a) where
+    IVar lock1 _ _ == IVar lock2 _ _ = lock1 == lock2
+    -- note: it would be possible to generalize the type to
+    -- eqIVar :: IVar a -> IVar b -> Bool  (but would that be useful?)
+
 -- | Create a new, empty 'IVar'.
 new :: IO (IVar a)
 new = do

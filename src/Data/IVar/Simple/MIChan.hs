@@ -29,6 +29,7 @@ import Control.Concurrent.MVar
 
 -- | A multicast channel.
 newtype MIChan a = MIChan (MVar (IChan.IChan a))
+    deriving Eq
 
 -- | Create a new multicast channel.
 new :: IO (MIChan a)

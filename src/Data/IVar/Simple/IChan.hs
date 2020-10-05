@@ -1,6 +1,6 @@
 -- |
 -- Module      : Data.IVar.Simple.IChan
--- Copyright   : (c) 2008-2012 Bertram Felgenhauer
+-- Copyright   : (c) 2008-2020 Bertram Felgenhauer
 -- License     : MIT
 --
 -- Maintainer  : Bertram Felgenhauer <int-e@gmx.de>
@@ -19,6 +19,7 @@ module Data.IVar.Simple.IChan (
     IChan,
     new,
     read,
+    uncons,
     write,
     tryWrite,
 ) where
@@ -30,6 +31,7 @@ import Control.Concurrent.MVar
 
 -- | A channel head
 newtype IChan a = IChan (IVar.IVar (a, IChan a))
+    deriving Eq
 
 -- | Create a new channel.
 new :: IO (IChan a)
@@ -41,7 +43,15 @@ new = IChan `fmap` IVar.new
 -- This is a pure computation. Forcing elements of the list may, however,
 -- block.
 read :: IChan a -> [a]
-read (IChan as) = let (a, ic) = IVar.read as in a : read ic
+read ic = let (a, ic') = uncons ic in a : read ic'
+
+-- | Split channel into head and tail.
+--
+-- This is a pure operation, but it may block.
+--
+-- @since 0.3.3
+uncons :: IChan a -> (a, IChan a)
+uncons (IChan as) = IVar.read as
 
 -- | Write a single value to the channel.
 --

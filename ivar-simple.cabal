@@ -17,6 +17,7 @@ build-type:    Simple
 extra-source-files:
     README.md
     Changelog
+    Sample.hs
 
 source-repository head
   type:                 git

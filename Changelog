@@ -1,5 +1,12 @@
+0.3.3   (2020-10-06)
+	* use only one `MVar` per `IVar` instead of two, taking advantage
+	  of the fact that `readMVar` has been atomic since ghc 7.10
+	* add `Eq` instance and `uncons` operation for `IChan`
+	  (suggested by ski@Freenode)
+
 0.3.2   (2015-10-29)
-	* add Eq instances for `IVar` and `MIChan`
+	* add `Eq` instances for `IVar` and `MIChan`
+	  (suggested by nwf@Freenode)
 
 0.3.1   (2015-07-02)
 	* fix building with ghc 7.8

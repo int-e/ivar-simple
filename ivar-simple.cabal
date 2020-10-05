@@ -1,8 +1,8 @@
 name:          ivar-simple
-version:       0.3.2
+version:       0.3.3
 category:      Concurrency
 stability:     experimental
-copyright:     (c) 2008-2015 Bertram Felgenhauer
+copyright:     (c) 2008-2020 Bertram Felgenhauer
 maintainer:    Bertram Felgenhauer <int-e@gmx.de>
 license:       MIT
 license-file:  LICENSE
@@ -12,7 +12,7 @@ description:
   .
   They can be read, an operation that will block until a value was written
   to the variable. They can be written to exactly once.
-cabal-version: >= 1.6
+cabal-version: >= 1.10
 build-type:    Simple
 extra-source-files:
     README.md
@@ -30,7 +30,9 @@ library
         Data.IVar.Simple
         Data.IVar.Simple.IChan
         Data.IVar.Simple.MIChan
+    default-language:
+        Haskell2010
     build-depends:
-        base >= 4 && < 5
-    extensions:
+        base >= 4.7 && < 5
+    other-extensions:
         DeriveDataTypeable

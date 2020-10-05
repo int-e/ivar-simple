@@ -1,6 +1,6 @@
 -- |
 -- Module      : Data.IVar.Simple.MIChan
--- Copyright   : (c) 2008-2012 Bertram Felgenhauer
+-- Copyright   : (c) 2008-2015 Bertram Felgenhauer
 -- License     : MIT
 --
 -- Maintainer  : Bertram Felgenhauer <int-e@gmx.de>
